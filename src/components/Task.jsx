@@ -6,9 +6,9 @@ const ContainerTask = styled("div")((props)=>({
   borderRadius: "2px",
   padding: "8px",
   marginBottom: "8px",
-  background: `${props.isDragging? 'lightgreen': 'white'}`
+  backgroundColor: `${props.isDragging? 'lightgreen': 'white'}`,
+  transition: 'background-color 0.2s ease'
 }));
-
 
 
 

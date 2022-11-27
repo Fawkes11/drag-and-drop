@@ -18,7 +18,7 @@ const Title = styled("h3")({
 const TaskList = styled("div")((props)=>({
     padding: "8px",
     backgroundColor: `${props.isDraggingOver? 'skyblue': 'white'}`,
-    transition: 'all 2s ease;'
+    transition: 'background-color 0.2s ease-in-out;'
 }));
 
 const Column = ({ column, tasks }) => {
