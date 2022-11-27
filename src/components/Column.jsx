@@ -1,11 +1,14 @@
 import { styled } from "@mui/system";
 import Task from "./Task";
+import { Droppable } from "react-beautiful-dnd";
 
 const ContainerList = styled("div")({
+  margin: "8px",
+  border: "1px solid lightgrey",
+  borderRadius: "2px",
   color: "darkslategray",
   backgroundColor: "aliceblue",
   padding: 8,
-  borderRadius: 4,
 });
 
 const Title = styled("h3")({
@@ -18,7 +21,18 @@ const Column = ({ column, tasks }) => {
   return (
     <ContainerList>
       <Title>{column.title}</Title>
-      <TaskList>{tasks.map(task => <Task key={task.id} task={task}/>)}</TaskList>
+      <Droppable droppableId={column.id}>
+        {(provided) => (
+          <TaskList
+          ref={provided.innerRef}
+          {...provided.droppableProps}>
+            {tasks.map((task, index) => (
+              <Task key={task.id} task={task} index={index} />
+            ))}
+            {provided.placeholder}
+          </TaskList>
+        )}
+      </Droppable>
     </ContainerList>
   );
 };
