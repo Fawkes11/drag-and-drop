@@ -3,11 +3,16 @@ import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
 
 const ContainerList = styled("div")({
+  
   margin: "8px",
   border: "1px solid lightgrey",
   borderRadius: "2px",
+  width: "220px",
+
   color: "darkslategray",
   padding: 8,
+  display: "flex",
+  flexDirection: "column",
 });
 
 const Title = styled("h3")({
@@ -18,7 +23,9 @@ const Title = styled("h3")({
 const TaskList = styled("div")((props)=>({
     padding: "8px",
     backgroundColor: `${props.isDraggingOver? 'skyblue': 'white'}`,
-    transition: 'background-color 0.2s ease-in-out;'
+    transition: 'background-color 0.2s ease-in-out;',
+    flexGrow: 1,
+    minHeight: "100px",
 }));
 
 const Column = ({ column, tasks }) => {
