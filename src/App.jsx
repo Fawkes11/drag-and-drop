@@ -1,10 +1,26 @@
-import React from "react"
+import initialData from'./initial-data'
+import Column from './components/Column'
+import { useEffect, useState } from 'react'
 
+const App = () => {
 
-function App() {
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    setData(initialData)
+  
+  }, [])
+  
 
   return (
-    <h1>Hola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundoHola mundo</h1>
+    
+      data.columnOrder?.map(columnId => {
+        const column = data.columns[columnId];
+        const tasks = column.taskIds.map(taskId => data.tasks[taskId]);
+
+        return <Column key={column.id} column={column} tasks={tasks} />;
+      })
+    
   )
 }
 
