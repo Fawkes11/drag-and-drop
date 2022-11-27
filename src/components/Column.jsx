@@ -3,7 +3,7 @@ import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
 
 const ContainerList = styled("div")({
-  
+
   margin: "8px",
   border: "1px solid lightgrey",
   borderRadius: "2px",
@@ -17,27 +17,30 @@ const ContainerList = styled("div")({
 
 const Title = styled("h3")({
   padding: "8px",
-  
+
 });
 
-const TaskList = styled("div")((props)=>({
-    padding: "8px",
-    backgroundColor: `${props.isDraggingOver? 'skyblue': 'white'}`,
-    transition: 'background-color 0.2s ease-in-out;',
-    flexGrow: 1,
-    minHeight: "100px",
+const TaskList = styled("div")((props) => ({
+  padding: "8px",
+  backgroundColor: `${props.isDraggingOver ? 'skyblue' : 'white'}`,
+  transition: 'background-color 0.2s ease-in-out;',
+  flexGrow: 1,
+  minHeight: "100px",
 }));
 
-const Column = ({ column, tasks }) => {
+const Column = ({ column, tasks , isDropDisabled}) => {
   return (
     <ContainerList>
       <Title>{column.title}</Title>
-      <Droppable droppableId={column.id}>
+      <Droppable
+        droppableId={column.id}
+        isDropDisabled={isDropDisabled}
+      >
         {(provided, snapshot) => (
           <TaskList
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          isDraggingOver={snapshot.isDraggingOver}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            isDraggingOver={snapshot.isDraggingOver}
           >
             {tasks.map((task, index) => (
               <Task key={task.id} task={task} index={index} />

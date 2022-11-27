@@ -9,14 +9,40 @@ const MainContainer = styled("div")({
   display: "flex",
 });
 
+
+
+
+
+
 const App = () => {
   const [data, setData] = useState({});
-
+  
+  
   useEffect(() => {
     setData(initialData);
   }, []);
 
+  const onDragStart = (start) => {
+    const homeIndex = data.columnOrder.indexOf(start.source.droppableId);
+
+    setData((prevData) =>
+    {
+      return {
+        ...prevData,
+        homeIndex
+      }
+    })
+  }
+
   const onDragEnd = (result) => {
+    setData((prevData) =>
+    {
+      return {
+        ...prevData,
+        homeIndex: null,
+      }
+    })
+    console.log(data)
     const { destination, source, draggableId } = result;
     //si lo mueve a un destino no permitido
     if (!destination) {
@@ -88,13 +114,18 @@ const App = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext
+    onDragStart={onDragStart}
+    onDragEnd={onDragEnd}
+    >
       <MainContainer>
-        {data.columnOrder?.map((columnId) => {
+        {data.columnOrder?.map((columnId, index) => {
           const column = data.columns[columnId];
           const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
 
-          return <Column key={column.id} column={column} tasks={tasks} />;
+          const isDropDisabled = index < data.homeIndex
+
+          return <Column key={column.id} column={column} tasks={tasks} isDropDisabled={isDropDisabled}/>;
         })}
       </MainContainer>
     </DragDropContext>
