@@ -21,7 +21,7 @@ const Handle = styled("div")({
 
 const Task = ({ task, index }) => {
 
-  const isDragDisabled = task.id === 'task-1';
+  const isDragDisabled = task.id === 'none';
   
   return (
     <Draggable

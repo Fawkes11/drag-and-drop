@@ -1,6 +1,6 @@
 import initialData from "./initial-data";
 import Column from "./components/Column";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { useEffect, useState } from "react";
 import { styled } from "@mui/system";
 
@@ -16,34 +16,14 @@ const MainContainer = styled("div")({
 
 const App = () => {
   const [data, setData] = useState({});
-  
-  
+
+
   useEffect(() => {
     setData(initialData);
   }, []);
 
-  const onDragStart = (start) => {
-    const homeIndex = data.columnOrder.indexOf(start.source.droppableId);
-
-    setData((prevData) =>
-    {
-      return {
-        ...prevData,
-        homeIndex
-      }
-    })
-  }
-
   const onDragEnd = (result) => {
-    setData((prevData) =>
-    {
-      return {
-        ...prevData,
-        homeIndex: null,
-      }
-    })
-    console.log(data)
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
     //si lo mueve a un destino no permitido
     if (!destination) {
       return;
@@ -53,6 +33,21 @@ const App = () => {
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
+      return;
+    }
+
+    //Ordenamiento Columnas
+    if (type === "column") {
+      const newColumnOrder = Array.from(data.columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+
+      setData((prevData) => {
+        return {
+          ...prevData,
+          columnOrder: newColumnOrder
+        }
+      })
       return;
     }
 
@@ -81,25 +76,25 @@ const App = () => {
       });
       return;
     }
-
+    //Mover tareas de una Columna a otra
     const startTaskIds = Array.from(start.taskIds);
     startTaskIds.splice(source.index, 1);
 
     const newStart = {
-     ...start,
+      ...start,
       taskIds: startTaskIds,
-    
+
     }
 
     const finishTaskIds = Array.from(finish.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
 
     const newFinish = {
-     ...finish,
-     taskIds: finishTaskIds,
+      ...finish,
+      taskIds: finishTaskIds,
     }
 
-    
+
     setData((prevData) => {
       return {
         ...prevData,
@@ -114,20 +109,26 @@ const App = () => {
   };
 
   return (
-    <DragDropContext
-    onDragStart={onDragStart}
-    onDragEnd={onDragEnd}
-    >
-      <MainContainer>
-        {data.columnOrder?.map((columnId, index) => {
-          const column = data.columns[columnId];
-          const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable
+        droppableId="all-columns"
+        direction="horizontal"
+        type="column">
+        {provided => (
+          <MainContainer
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {data.columnOrder?.map((columnId, index) => {
+              const column = data.columns[columnId];
+              const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
 
-          const isDropDisabled = index < data.homeIndex
-
-          return <Column key={column.id} column={column} tasks={tasks} isDropDisabled={isDropDisabled}/>;
-        })}
-      </MainContainer>
+              return <Column key={column.id} column={column} tasks={tasks} index={index}/>;
+            })}
+            {provided.placeholder}
+          </MainContainer>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 };
